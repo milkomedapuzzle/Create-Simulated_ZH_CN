@@ -1,0 +1,25 @@
+name: 自动打包发布资源包
+
+on:
+  push:
+    tags:
+      - 'v*' # 当你推送以 v 开头的标签（如 v1.0）时触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 打包成压缩包
+        run: |
+          # 仅压缩 assets 和 pack.mcmeta，不包含外层文件夹
+          zip -r Create-Simulated-ZH_CN.zip assets pack.mcmeta
+
+      - name: 发布 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Create-Simulated-ZH_CN.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
